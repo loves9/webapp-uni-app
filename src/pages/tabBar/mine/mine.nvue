@@ -1,0 +1,115 @@
+<template>
+	<view>
+		<view class="uni-flex uni-row" style="background-color: #FFFFFF; padding: 15rpx;">
+
+			<view class="text uni-flex" style="width: 100rpx;height: 100rpx;-webkit-justify-content: center;justify-content: center;-webkit-align-items: center;align-items: center;">
+				<image class="mine-avatar" mode="widthFix" src="../../../static/uni.png" />
+				
+			</view>
+			<view class="uni-flex uni-column" style="-webkit-flex: 1;flex: 1;-webkit-justify-content: space-between;justify-content: space-between;padding-left: 20rpx;">
+				<view class="text" style="text-align: left;">
+					冯唐
+				</view>
+				<view class="text" style="text-align: left; color: #999999;">
+					科技部/科技委员会/经理
+				</view>
+			</view>
+		</view>
+
+		<uni-list style="margin-top: 15rpx;">
+			<uni-list-item title="工作圈" thumb="https://img-cdn-qiniu.dcloud.net.cn/new-page/uni.png" />
+			<uni-list-item title="我的收藏" thumb="https://img-cdn-qiniu.dcloud.net.cn/new-page/uni.png" />
+			
+			<uni-list-item title="实验室" thumb="https://img-cdn-qiniu.dcloud.net.cn/new-page/uni.png" />
+			
+			<uni-list-item :show-extra-icon="true" :extra-icon="extraIcon1" title="设置" />
+		</uni-list>
+	</view>
+</template>
+<script>
+	// TODO 修复Android v3 加载过慢问题
+	// #ifdef APP-PLUS
+	var domModule = weex.requireModule('dom');
+	domModule.addRule('fontFace', {
+		'fontFamily': "uniicons",
+		'src': "url('/static/uni.ttf')"
+	});
+	// #endif
+
+	import uLink from '@/components/uLink.vue'
+	export default {
+		components: {
+			uLink
+		},
+		data() {
+			return {
+				extraIcon1: {
+					color: '#666666',
+					size: '22',
+					type: 'gear-filled'
+				},
+				extraIcon2: {
+					color: '#4cd964',
+					size: '22',
+					type: 'image'
+				},
+				navigateFlag: false
+			}
+		},
+		onShareAppMessage() {
+			return {
+				title: '欢迎体验uni-app',
+				path: '/pages/tabBar/component/component'
+			}
+		},
+		onNavigationBarButtonTap(e) {
+			uni.navigateTo({
+				url: '/pages/about/about'
+			});
+		},
+		methods: {
+			triggerCollapse(e) {
+				if (!this.list[e].pages) {
+					this.goDetailPage(this.list[e].url);
+					return;
+				}
+				for (var i = 0; i < this.list.length; ++i) {
+					if (e === i) {
+						this.list[i].open = !this.list[e].open;
+					} else {
+						this.list[i].open = false;
+					}
+				}
+			},
+			goDetailPage(e) {
+				if (this.navigateFlag) {
+					return;
+				}
+				this.navigateFlag = true;
+				if (typeof e === 'string') {
+					uni.navigateTo({
+						url: '/pages/component/' + e + '/' + e
+					})
+				} else {
+					uni.navigateTo({
+						url: e.url
+					})
+				}
+				setTimeout(() => {
+					this.navigateFlag = false;
+				}, 200)
+			}
+		}
+	}
+</script>
+
+<style>
+	@import '../../../common/uni-nvue.css';
+
+	.mine-avatar {
+		width: 90rpx;
+		height: 90rpx;
+
+		/* margin: 15rpx; */
+	}
+</style>

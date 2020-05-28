@@ -1,0 +1,182 @@
+<template>
+	<view class="">
+		<view class="workbench-swiper-container">
+			<swiper class="swiper" circular :indicator-dots="true" :autoplay="true" :interval="2000" :duration="500">
+				<swiper-item>
+					<view class="swiper-item uni-bg-red">A</view>
+				</swiper-item>
+				<swiper-item>
+					<view class="swiper-item uni-bg-green">B</view>
+				</swiper-item>
+				<swiper-item>
+					<view class="swiper-item uni-bg-blue">C</view>
+				</swiper-item>
+			</swiper>
+		</view>
+
+		<view class="workbench-grid-container">
+			<uni-grid :column="3" :show-border="false" :square="false" @change="goDetailPage">
+				<uni-grid-item v-if="index < 6" v-for="(item ,index) in list" :index="index" :key="index">
+					<view class="grid-item-box">
+						<image class="image" :src="item.url" mode="aspectFill" />
+						<text class="text">{{item.text}}</text>
+						<view v-if="item.badge" class="grid-dot">
+							<uni-badge :text="item.badge" :type="item.type" />
+						</view>
+					</view>
+				</uni-grid-item>
+			</uni-grid>
+		</view>
+	</view>
+</template>
+<script>
+	// TODO 修复Android v3 加载过慢问题
+	// #ifdef APP-PLUS
+	var domModule = weex.requireModule('dom');
+	domModule.addRule('fontFace', {
+		'fontFamily': "uniicons",
+		'src': "url('/static/uni.ttf')"
+	});
+	// #endif
+
+	import uLink from '@/components/uLink.vue'
+	export default {
+		components: {
+			uLink
+		},
+		data() {
+			return {
+				list: [{
+						url: '/static/logo.png',
+						text: '待办服务',
+						badge: '0',
+						type: "primary"
+					},
+					{
+						url: '/static/logo.png',
+						text: '会议审议',
+						badge: '1',
+						type: "success"
+					},
+					{
+						url: '/static/logo.png',
+						text: 'Grid 3',
+						badge: '99',
+						type: "warning"
+					},
+					{
+						url: '/static/logo.png',
+						text: 'Grid 4',
+						badge: '2',
+						type: "error"
+					},
+					{
+						url: '/static/logo.png',
+						text: 'Grid 5'
+					}
+				],
+				navigateFlag: false
+			}
+		},
+		onShareAppMessage() {
+			return {
+				title: '欢迎体验uni-app',
+				path: '/pages/tabBar/component/component'
+			}
+		},
+		onNavigationBarButtonTap(e) {
+
+
+			// uni.navigateTo({
+			// 	url: '/pages/about/about'
+			// });
+		},
+		methods: {
+			triggerCollapse(e) {
+				if (!this.list[e].pages) {
+					this.goDetailPage(this.list[e].url);
+					return;
+				}
+				for (var i = 0; i < this.list.length; ++i) {
+					if (e === i) {
+						this.list[i].open = !this.list[e].open;
+					} else {
+						this.list[i].open = false;
+					}
+				}
+			},
+			goDetailPage(e) {
+				let {
+					index
+				} = e.detail
+				this.list[index].badge && this.list[index].badge++
+
+				// uni.showToast({
+				// 	title: `点击第${index+1}个宫格`,
+				// 	icon: 'none'
+				// })
+
+
+				uni.navigateTo({
+					url: '/pages/tabBar/component/component'
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+	@import '../../../common/uni-nvue.css';
+
+	.workbench-swiper-container {
+		/* height: 500px; */
+		/* width:690rpx; */
+		/* margin:0 30rpx; */
+	}
+
+	.swiper {
+		height: 300rpx;
+	}
+
+	.swiper-item {
+		display: block;
+		height: 300rpx;
+		line-height: 300rpx;
+		text-align: center;
+	}
+
+	.workbench-grid-container {
+
+		background-color: #ffffff;
+		margin-top: 20rpx;
+	}
+
+	.grid-item-box {
+		flex: 1;
+		/* position: relative;
+	*/
+		/* #ifndef APP-NVUE */
+		display: flex;
+		/* #endif */
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		padding: 15px 0;
+	}
+
+	.grid-dot {
+		position: absolute;
+		top: 5px;
+		right: 15px;
+	}
+
+	.image {
+		width: 50rpx;
+		height: 50rpx;
+	}
+
+	.text {
+		font-size: 26rpx;
+		margin-top: 10rpx;
+	}
+</style>
